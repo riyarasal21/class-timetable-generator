@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Login</title>
+
+<style>
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.login-box {
+  background: white;
+  padding: 35px;
+  width: 360px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+  text-align: center;
+}
+
+.login-box h2 {
+  margin-bottom: 20px;
+  color: #1e3c72;
+  font-size: 24px;
+}
+
+label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 600;
+  text-align: left;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background: #1e3c72;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+button:hover {
+  background: #163061;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.logo {
+  font-size: 40px;
+  margin-bottom: 5px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="login-box">
+
+<div class="logo">🔐</div>
+<h2>Admin Login</h2>
+
+<form autocomplete="off">
+
+<label for="adminName">Admin Name</label>
+<input 
+type="text" 
+id="adminName" 
+placeholder="Enter admin name"
+autocomplete="off">
+
+<label for="password">Password</label>
+<input 
+type="password" 
+id="password" 
+placeholder="Enter password"
+autocomplete="new-password">
+
+<button type="button" onclick="login()">Login</button>
+
+<div class="error" id="errorMsg"></div>
+
+</form>
+
+</div>
+
+<script>
+
+function login() {
+
+const adminName = document.getElementById("adminName").value;
+const password = document.getElementById("password").value;
+
+if (!adminName || !password) {
+document.getElementById("errorMsg").innerText = "Please enter all fields";
+return;
+}
+
+if (adminName === "admin" && password === "admin123") {
+window.location.href = "admin-dashboard.html";
+} 
+else {
+document.getElementById("errorMsg").innerText = "Invalid admin name or password";
+}
+
+}
+
+</script>
+
+</body>
+</html>

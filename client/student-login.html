@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Login</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      width: 300px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      margin: 10px 0;
+    }
+
+    button {
+      width: 100%;
+      padding: 8px;
+      background: #007bff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    .error {
+      color: red;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="login-box">
+  <h2>Student Login</h2>
+
+  <!-- autocomplete disabled -->
+  <input type="number" id="roll_no" placeholder="Roll Number" autocomplete="off" required>
+
+  <input type="password" id="password" placeholder="Password" autocomplete="new-password" required>
+
+  <button onclick="login()">Login</button>
+
+  <p class="error" id="errorMsg"></p>
+</div>
+
+<script>
+
+function login() {
+
+  const roll_no = document.getElementById("roll_no").value;
+  const password = document.getElementById("password").value;
+
+  if (!roll_no || !password) {
+    document.getElementById("errorMsg").innerText = "Please enter all fields";
+    return;
+  }
+
+  fetch("http://localhost:3000/api/student/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ roll_no, password })
+  })
+  .then(res => res.json())
+  .then(data => {
+
+    if (data.class_id) {
+
+      localStorage.setItem("student_name", data.student_name);
+      localStorage.setItem("class_id", data.class_id);
+
+      window.location.href = "student-dashboard.html";
+
+    } else {
+
+      document.getElementById("errorMsg").innerText = data.message;
+
+    }
+
+  })
+  .catch(() => {
+
+    document.getElementById("errorMsg").innerText = "Server error";
+
+  });
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Update Timetable</title>
+
+<style>
+body { font-family: Arial; background:#f4f6f8; margin:0 }
+.navbar { background:#1e293b; color:white; padding:15px 30px; font-size:20px }
+.page-title { text-align:center; margin:20px; color:#1e293b }
+.container { display:flex; gap:30px; justify-content:center; padding:30px; flex-wrap:wrap }
+.box { background:white; padding:25px; width:520px; border-radius:12px; box-shadow:0 0 12px rgba(0,0,0,.1) }
+.row { margin-bottom:12px }
+label { font-weight:600; display:block }
+select,input { width:100%; padding:10px; border-radius:6px; border:1px solid #d1d5db }
+button { width:100%; padding:12px; border-radius:8px; border:none; cursor:pointer }
+.load-btn { background:#2563eb; color:white }
+.update-btn { background:#16a34a; color:white }
+.back-btn { background:#6b7280; color:white; margin-top:8px }
+</style>
+</head>
+
+<body>
+
+<div class="navbar">Admin Panel – Update Timetable</div>
+<h2 class="page-title">Update Timetable</h2>
+
+<div class="container">
+
+<div class="box">
+  <h3>Step 1 — Select Existing Entry</h3>
+
+  <div class="row"><label>Class</label><select id="class_id"></select></div>
+
+  <div class="row">
+    <label>Day</label>
+    <select id="day">
+      <option value="">Select</option>
+      <option value="MONDAY">Monday</option>
+      <option value="TUESDAY">Tuesday</option>
+      <option value="WEDNESDAY">Wednesday</option>
+      <option value="THURSDAY">Thursday</option>
+      <option value="FRIDAY">Friday</option>
+      <option value="SATURDAY">Saturday</option>
+    </select>
+  </div>
+
+  <div class="row"><label>Time Slot</label><select id="time_slot_id"></select></div>
+
+  <button class="load-btn" onclick="loadForUpdate()">Load Timetable</button>
+  <button class="back-btn" onclick="goBack()">Back to dashboard</button>
+</div>
+
+<div class="box">
+  <h3>Step 2 — Edit Details</h3>
+
+  <input type="hidden" id="timetable_id">
+
+  <div class="row"><label>Subject</label><select id="subject_id"></select></div>
+  <div class="row"><label>Teacher</label><select id="teacher_id"></select></div>
+  <div class="row"><label>Room</label><select id="room_id"></select></div>
+  <div class="row"><label>Lab</label><select id="lab_id"></select></div>
+  <div class="row"><label>Batch</label><input id="batch"></div>
+
+  <div class="row">
+    <label>Type</label>
+    <select id="entry_type">
+      <option value="LECTURE">Lecture</option>
+      <option value="PRACTICAL">Practical</option>
+      <option value="BREAK">Break</option>
+    </select>
+  </div>
+
+  <button class="update-btn" onclick="updateTimetable()">Update Timetable</button>
+</div>
+
+</div>
+
+<script>
+const API = "http://localhost:3000/api";
+
+document.addEventListener("DOMContentLoaded", () => {
+  load("/classes","class_id","class_id","class_name");
+  load("/subjects","subject_id","subject_id","subject_name");
+  load("/teachers","teacher_id","teacher_id","teacher_name");
+  load("/rooms","room_id","room_id","room_name");
+  load("/labs","lab_id","lab_id","lab_name");
+  load("/timeslots","time_slot_id","time_slot_id","time");
+});
+
+function load(ep,id,val,txt){
+  fetch(API+ep).then(r=>r.json()).then(d=>{
+    const s=document.getElementById(id);
+    s.innerHTML='<option value="">Select</option>';
+    d.forEach(x=>s.innerHTML+=`<option value="${x[val]}">${x[txt]}</option>`);
+  });
+}
+
+function selectByText(selectId, text){
+  const sel=document.getElementById(selectId);
+  [...sel.options].forEach(o=>{
+    if(o.text.trim()===text) sel.value=o.value;
+  });
+}
+
+function loadForUpdate(){
+  const c=class_id.value,d=day.value,t=time_slot_id.value;
+  if(!c||!d||!t) return alert("Select all fields");
+
+  fetch(`${API}/timetable/${c}/${d}/${t}`)
+    .then(r=>r.json())
+    .then(data=>{
+      if(!data.length) return alert("No timetable found");
+
+      const x=data[0];
+      timetable_id.value=x.timetable_id;
+      entry_type.value=x.entry_type;
+
+      selectByText("subject_id",x.subject_name);
+      selectByText("teacher_id",x.teacher_name);
+      selectByText("room_id",x.room_name);
+      if(x.lab_name) selectByText("lab_id",x.lab_name);
+    });
+}
+
+function updateTimetable(){
+  const id=timetable_id.value;
+  if(!id) return alert("Load timetable first");
+
+  fetch(`${API}/timetable/${id}`,{
+    method:"PUT",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({
+      subject_id:subject_id.value,
+      teacher_id:teacher_id.value,
+      room_id:room_id.value,
+      lab_id:lab_id.value||null,
+      batch:batch.value||null,
+      entry_type:entry_type.value
+    })
+  }).then(r=>alert(r.ok?"✅ Updated":"❌ Failed"));
+}
+
+function goBack(){ location.href="admin-dashboard.html"; }
+</script>
+
+</body>
+</html>

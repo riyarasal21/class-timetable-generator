@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  margin: 0;
+  padding: 0;
+}
+
+/* ---------- TOP NAVBAR ---------- */
+.navbar {
+  background: #1e293b;
+  color: white;
+  padding: 15px 30px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+/* ---------- CENTER BOX ---------- */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 60px);
+}
+
+.dashboard {
+  background: white;
+  padding: 35px;
+  width: 420px;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+/* Title */
+h2 {
+  margin-bottom: 25px;
+  color: #1e293b;
+}
+
+/* Buttons */
+button {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Button colors */
+.add-btn {
+  background: #22c55e;
+  color: white;
+}
+
+.update-btn {
+  background: #2563eb;
+  color: white;
+}
+
+.logout-btn {
+  background: #ef4444;
+  color: white;
+}
+
+/* Hover effects */
+.add-btn:hover {
+  background: #16a34a;
+}
+
+.update-btn:hover {
+  background: #1d4ed8;
+}
+
+.logout-btn:hover {
+  background: #dc2626;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  margin-top: 20px;
+  color: gray;
+  font-size: 14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="navbar">
+  📘 Timetable Management — Admin Panel
+</div>
+
+<div class="container">
+  <div class="dashboard">
+    <h2>Admin Dashboard</h2>
+
+    <button class="add-btn" onclick="goToAdd()">➕ Add Timetable</button>
+    <button class="update-btn" onclick="goToUpdate()">✏️ Update Timetable</button>
+    <button class="delete-btn" onclick="window.location.href='delete.html'">Delete Timetable</button>
+    <button class="logout-btn" onclick="logout()">🚪 Logout</button>
+
+
+    <div class="footer">
+      College Timetable System
+    </div>
+  </div>
+</div>
+
+<script>
+function goToAdd() {
+  window.location.href = "add.html";
+}
+
+function goToUpdate() {
+  window.location.href = "update.html";
+}
+
+function logout() {
+  window.location.href = "admin.html";
+}
+
+
+
+</script>
+
+</body>
+</html>

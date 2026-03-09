@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Student Dashboard</title>
+
+  <style>
+
+    body{
+      font-family: Arial;
+      padding:20px;
+    }
+
+    h2{
+      display:inline-block;
+    }
+
+    .logout-btn{
+      float:right;
+      padding:6px 12px;
+      background:red;
+      color:white;
+      border:none;
+      cursor:pointer;
+    }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:20px;
+    }
+
+    th,td{
+      border:1px solid #ccc;
+      padding:8px;
+      text-align:center;
+      vertical-align:middle;
+    }
+
+    th{
+      background:#007bff;
+      color:white;
+    }
+
+    .break{
+      background:#ffeeba;
+      font-weight:bold;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+<h2>Welcome, <span id="studentName"></span></h2>
+<button class="logout-btn" onclick="logout()">Logout</button>
+
+<h3>Your Timetable</h3>
+
+<table id="timetableTable">
+
+<thead>
+<tr>
+<th>Time</th>
+<th>Monday</th>
+<th>Tuesday</th>
+<th>Wednesday</th>
+<th>Thursday</th>
+<th>Friday</th>
+<th>Saturday</th>
+</tr>
+</thead>
+
+<tbody></tbody>
+
+</table>
+
+<script>
+
+const studentName = localStorage.getItem("student_name");
+const classId = localStorage.getItem("class_id");
+
+if(!studentName || !classId){
+  window.location.href="student-login.html";
+}
+
+document.getElementById("studentName").innerText = studentName;
+
+
+
+const timeSlots = [
+"07:15 - 08:15",
+"08:15 - 09:15",
+"09:15 - 09:40",
+"09:40 - 10:40",
+"10:40 - 11:40",
+"11:40 - 12:40"
+];
+
+const days = [
+"Monday",
+"Tuesday",
+"Wednesday",
+"Thursday",
+"Friday",
+"Saturday"
+];
+
+
+
+fetch(`http://localhost:3000/api/timetable/${classId}`)
+.then(res => res.json())
+.then(data => {
+
+const tableBody = document.querySelector("#timetableTable tbody");
+tableBody.innerHTML="";
+
+timeSlots.forEach(time => {
+
+const tr=document.createElement("tr");
+
+tr.innerHTML=`<td><strong>${time}</strong></td>`;
+
+
+days.forEach(day => {
+
+const entries = data.filter(item =>
+item.time === time && item.day === day
+);
+
+let cellContent="-";
+
+if(entries.length>0){
+
+cellContent="";
+
+entries.forEach(entry=>{
+
+if(entry.entry_type==="BREAK"){
+
+cellContent+=`<div class="break">BREAK</div>`;
+
+}else{
+
+cellContent+=`
+<div>
+<strong>${entry.subject_name}</strong><br>
+${entry.teacher_name}<br>
+${entry.room_name ? "Room: "+entry.room_name : ""}
+${entry.lab_name ? "<br>Lab: "+entry.lab_name : ""}
+</div>
+<hr>
+`;
+
+}
+
+});
+
+}
+
+const td=document.createElement("td");
+td.innerHTML=cellContent;
+
+tr.appendChild(td);
+
+});
+
+tableBody.appendChild(tr);
+
+});
+
+});
+
+
+
+function logout(){
+
+localStorage.clear();
+window.location.href="student-login.html";
+
+}
+
+</script>
+
+</body>
+</html>
